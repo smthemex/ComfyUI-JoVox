@@ -1,0 +1,585 @@
+{
+  "id": "jovox-example-67473606",
+  "revision": 0,
+  "last_node_id": 10,
+  "last_link_id": 5010,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [
+        -1750,
+        120
+      ],
+      "size": [
+        740,
+        900
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            5000
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            5001
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "example.png",
+        "upload": "image"
+      }
+    },
+    {
+      "id": 2,
+      "type": "CLIPVisionLoader",
+      "pos": [
+        -1750,
+        1080
+      ],
+      "size": [
+        330,
+        80
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP_VISION",
+          "type": "CLIP_VISION",
+          "links": [
+            5002
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPVisionLoader"
+      },
+      "widgets_values": [
+        "dino_v3_vit_l_naf.safetensors"
+      ],
+      "widgets_values_named": {
+        "clip_name": "dino_v3_vit_l_naf.safetensors"
+      }
+    },
+    {
+      "id": 3,
+      "type": "ImageCropToMask",
+      "pos": [
+        -950,
+        120
+      ],
+      "size": [
+        300,
+        210
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 5000
+        },
+        {
+          "name": "masks",
+          "type": "MASK",
+          "link": 5001
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            5003
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageCropToMask"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1.4,
+        0,
+        "#000000"
+      ],
+      "widgets_values_named": {
+        "width": 1024,
+        "height": 1024,
+        "pad_factor": 1.4,
+        "grow_mask": 0,
+        "background": "#000000"
+      }
+    },
+    {
+      "id": 4,
+      "type": "Trellis2Conditioning",
+      "pos": [
+        -600,
+        520
+      ],
+      "size": [
+        240,
+        70
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip_vision_model",
+          "type": "CLIP_VISION",
+          "link": 5002
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 5003
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            5005
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            5006
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Trellis2Conditioning"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "JoVoxModelLoader",
+      "pos": [
+        -950,
+        900
+      ],
+      "size": [
+        330,
+        80
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "jovox",
+          "type": "JOVOX_MODEL",
+          "links": [
+            5004
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JoVoxModelLoader"
+      },
+      "widgets_values": [
+        "JoVox_int8_convrot.safetensors"
+      ],
+      "widgets_values_named": {
+        "model_name": "JoVox_int8_convrot.safetensors"
+      }
+    },
+    {
+      "id": 6,
+      "type": "EmptyTrellis2LatentStructure",
+      "pos": [
+        -950,
+        1040
+      ],
+      "size": [
+        260,
+        80
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            5007
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyTrellis2LatentStructure"
+      },
+      "widgets_values": [
+        1
+      ],
+      "widgets_values_named": {
+        "batch_size": 1
+      }
+    },
+    {
+      "id": 7,
+      "type": "JoVoxVoxelSampler",
+      "pos": [
+        -280,
+        620
+      ],
+      "size": [
+        340,
+        220
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "jovox",
+          "type": "JOVOX_MODEL",
+          "link": 5004
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 5005
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 5006,
+          "shape": 7
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 5007,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "voxel",
+          "type": "VOXEL",
+          "links": [
+            5008
+          ]
+        },
+        {
+          "name": "voxel_structure",
+          "type": "VOXEL",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "JoVoxVoxelSampler"
+      },
+      "widgets_values": [
+        0,
+        "fixed",
+        72,
+        1.5,
+        0.0
+      ],
+      "widgets_values_named": {
+        "seed": 0,
+        "steps": 72,
+        "cfg": 1.5,
+        "temperature": 0.0
+      }
+    },
+    {
+      "id": 8,
+      "type": "VoxelToMesh",
+      "pos": [
+        120,
+        520
+      ],
+      "size": [
+        270,
+        90
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "voxel",
+          "type": "VOXEL",
+          "link": 5008
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MESH",
+          "type": "MESH",
+          "links": [
+            5009
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VoxelToMesh"
+      },
+      "widgets_values": [
+        "basic",
+        0.6
+      ],
+      "widgets_values_named": {
+        "algorithm": "basic",
+        "threshold": 0.6
+      }
+    },
+    {
+      "id": 9,
+      "type": "MeshToFile3D",
+      "pos": [
+        440,
+        520
+      ],
+      "size": [
+        240,
+        40
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mesh",
+          "type": "MESH",
+          "link": 5009
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model_3d",
+          "type": "FILE_3D_GLB",
+          "links": [
+            5010
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MeshToFile3D"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "Preview3DAdvanced",
+      "pos": [
+        730,
+        300
+      ],
+      "size": [
+        420,
+        560
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model_3d",
+          "type": "FILE_3D_GLB,FILE_3D_GLTF,FILE_3D_FBX,FILE_3D_OBJ,FILE_3D_STL,FILE_3D_USDZ,FILE_3D",
+          "link": 5010
+        },
+        {
+          "name": "model_3d_info",
+          "type": "LOAD3D_MODEL_INFO",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "camera_info",
+          "type": "LOAD3D_CAMERA",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model_3d",
+          "type": "FILE_3D",
+          "links": []
+        },
+        {
+          "name": "model_3d_info",
+          "type": "LOAD3D_MODEL_INFO",
+          "links": []
+        },
+        {
+          "name": "camera_info",
+          "type": "LOAD3D_CAMERA",
+          "links": []
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": []
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Preview3DAdvanced"
+      },
+      "widgets_values": [
+        "",
+        1024,
+        1024
+      ],
+      "widgets_values_named": {}
+    }
+  ],
+  "links": [
+    [
+      5000,
+      1,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      5001,
+      1,
+      1,
+      3,
+      1,
+      "MASK"
+    ],
+    [
+      5002,
+      2,
+      0,
+      4,
+      0,
+      "CLIP_VISION"
+    ],
+    [
+      5003,
+      3,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      5004,
+      5,
+      0,
+      7,
+      0,
+      "JOVOX_MODEL"
+    ],
+    [
+      5005,
+      4,
+      0,
+      7,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      5006,
+      4,
+      1,
+      7,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      5007,
+      6,
+      0,
+      7,
+      3,
+      "LATENT"
+    ],
+    [
+      5008,
+      7,
+      0,
+      8,
+      0,
+      "VOXEL"
+    ],
+    [
+      5009,
+      8,
+      0,
+      9,
+      0,
+      "MESH"
+    ],
+    [
+      5010,
+      9,
+      0,
+      10,
+      0,
+      "FILE_3D_GLB"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "JoVox 64^3 Voxel Generation",
+      "bounding": [
+        -1780,
+        60,
+        2200,
+        1080
+      ],
+      "color": "#8A8",
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8,
+      "offset": [
+        600,
+        100
+      ]
+    },
+    "frontendVersion": "1.58.5"
+  },
+  "version": 0.4
+}

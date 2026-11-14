@@ -1,0 +1,15 @@
+[project]
+name = "jovox"
+description = "JoVox: Joint Hierarchical Flow Matching for Lightweight Voxel Generation"
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/smthemex/ComfyUI-JoVox"
+#  Used by Comfy Registry https://registry.comfy.org
+
+[tool.comfy]
+PublisherId = "smthemex"
+DisplayName = "ComfyUI-JoVox"
+Icon = ""
+includes = []
