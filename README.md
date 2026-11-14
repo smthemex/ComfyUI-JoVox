@@ -19,7 +19,7 @@ ComfyUI/models/
 ```
 
 # 3 .Example
-![](https://github.com/smthemexComfyUI-JoVox/blob/main/example_workflows/example.png)
+![](https://github.com/smthemex/ComfyUI-JoVox/blob/main/example_workflows/example.png)
 
 ## 4. Citation
 
